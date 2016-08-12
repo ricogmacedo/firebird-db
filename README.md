@@ -1,6 +1,23 @@
 # firebird-db
 Facilitates the use of Firebird with object orientation without using the PDO
 
+## Installation
+Add repositories and require section in composer.json project
+
+```json
+{
+		"repositories": [
+		    {
+		        "url": "https://github.com/ricogmacedo/firebird-db.git",
+		        "type": "git"
+		    }
+		],
+    "require": {
+        "ricogmacedo/firebird-db": "1.0.0"
+    }
+}
+```
+
 ## Example usage
 Create a namespace alias for ease of use
 ```php
