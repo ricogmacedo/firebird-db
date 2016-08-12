@@ -6,15 +6,15 @@ Add repositories and require section in composer.json project
 
 ```json
 {
-		"repositories": [
-		    {
-		        "url": "https://github.com/ricogmacedo/firebird-db.git",
-		        "type": "git"
-		    }
-		],
-    "require": {
-        "ricogmacedo/firebird-db": "1.0.0"
-    }
+	"repositories": [
+	    {
+	        "url": "https://github.com/ricogmacedo/firebird-db.git",
+	        "type": "git"
+	    }
+	],
+	"require": {
+	"ricogmacedo/firebird-db": "1.0.0"
+	}
 }
 ```
 
