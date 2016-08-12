@@ -1,5 +1,6 @@
 <?php
 namespace FirebirdDB;
+use \Exception as Exception;
 /**
 * Classe utilizada para facilitar a utilização do Firebird com orientação a objetos sem utilizar o PDO
 * @author   Ricardo Macedo
