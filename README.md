@@ -13,7 +13,7 @@ Add repositories and require section in composer.json project
 	    }
 	],
 	"require": {
-	"ricogmacedo/firebird-db": "1.0.0"
+		"ricogmacedo/firebird-db": "1.0.0"
 	}
 }
 ```
