@@ -1,5 +1,6 @@
 {
     "name": "ricogmacedo/firebird-db",
+    "version": "1.0.0",
     "description": "Pacote utilizado para facilitar a utilização do Firebird com orientação a objetos sem utilizar o PDO",
     "authors": [
         {
