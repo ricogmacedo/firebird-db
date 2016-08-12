@@ -1,5 +1,6 @@
 <?php
 namespace FirebirdDB;
+use \Exception as Exception;
 /**
 * Classe utilizada para gravar as querys criadas através da FirebirdDB
 * @author   Ricardo Macedo
