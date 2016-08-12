@@ -118,4 +118,11 @@ class QueryBuildDB {
     public function getResult() {
         return $this->results;
     }
+    
+    /*
+    * Retorna apenas um resultado na consulta
+    */
+    public function getOneResult() {
+        return $this->results[0];
+    }
 }
