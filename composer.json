@@ -1,14 +1,14 @@
 {
     "name": "ricogmacedo/firebird-db",
     "version": "1.0.0",
-    "description": "Pacote utilizado para facilitar a utilização do Firebird com orientação a objetos sem utilizar o PDO",
+    "description": "Facilitates the use of Firebird with object orientation without using the PDO",
     "authors": [
         {
             "name": "Rico Macedo",
             "email": "ricogmacedo@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0"
     },

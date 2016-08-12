@@ -2,27 +2,32 @@
 namespace FirebirdDB;
 use \Exception as Exception;
 /**
-* Classe utilizada para gravar as querys criadas através da FirebirdDB
+* Class used to save queries created by FirebirdDB
 * @author   Ricardo Macedo
 * @version  1.0.0
 */
 class QueryBuildDB {
 
-    private $query; // Armazena o objeto de conexão originado pelo ibase_connect
-    private $args = 0; // Número de argumentos que foram bindados
-    private $results; // Objeto com os Resultados de uma query
+    private $conn; // Store Firebird Connection received in the object parameter
+    private $query; // SQL Statement
+    private $args = 0; // Arguments number that were defined in the query
+    private $results; // Query result originated of ibase_fetch_object function ibase_query_object
 
     /*
-    * Cria a conexão com as informações passadas através dos parametros
-    * @param string     $query     Instrução SQL que será executada
+    * Set class attributes
+    * @param string $conn Firebird Connection
+    * @param string $query SQL Query
     */
-    function __construct($query) {
+    function __construct($conn, $query) {
         try {
             if(trim($query) == '' || !isset($query)){
-                throw new Exception("Erro: PrepareFirebirdDB::constructor error: Parametro invalido ou em branco");
+                throw new Exception("Erro: PrepareFirebirdDB::constructor error: Invalid or blank parameter");
             } else {
+                if(!($this->conn = $conn)){
+                    throw new Exception("Erro: PrepareFirebirdDB::constructor error: Error to set parameter CONN");
+                }
                 if(!($this->query = $query)){
-                    throw new Exception("Erro: PrepareFirebirdDB::constructor error: Erro para definir o parametro");
+                    throw new Exception("Erro: PrepareFirebirdDB::constructor error: Error to set parameter QUERY");
                 }
             }
         }
@@ -32,9 +37,9 @@ class QueryBuildDB {
     }
 
     /*
-    * Verifica se o tipo passado no setParam corresponde ao valor informado
-    * @param string     $type     Tipo aceitado pela classe (S para String, I para Integer, N para Double)
-    * @param string     $param    Parametro que será testado
+    * Verifies that the type passed in setParam matches the value entered
+    * @param string $type Types (S to String, I to Integer, N to Double)
+    * @param string $param Parameter to be tested
     */
     private function typeCheck($type, $param){
         switch ($type) {
@@ -45,32 +50,32 @@ class QueryBuildDB {
     }
 
     /*
-    * Retorna o parametro conforme o tipo passado
-    * @param multiple   $type     Tipo aceitado pela classe (S para String, I para Integer, N para Double)
-    * @param string     $param    Parametro que será "formatado"
+    * Returns the value depending on the type informed
+    * @param string $type Type accepted by the class (S to String, I to Integer, N to Double)
+    * @param string $value Value that will "receive" the type
     */
-    private function setType($type, $param){
+    private function setType($type, $value){
         switch ($type) {
-            case 'S': return "'{$param}'"; break;
-            case 'I': return (int) $param; break;
-            case 'N': return (double) $param; break;
+            case 'S': return "'{$value}'"; break;
+            case 'I': return (int) $value; break;
+            case 'N': return (double) $value; break;
         }
     }
 
     /*
-    * Aplica o Parametro Informado na Query
-    * @param multiple   $type     Tipo aceitado pela classe (S para String, I para Integer, N para Double)
-    * @param string     $param    Parametro que será aplicado
+    * Apply Parameter informed in Query
+    * @param string $type Type accepted by the class (S to String, I to Integer, N to Double)
+    * @param string $value Value that will "receive" the type
     */
-    public function setParam($type, $param) {
+    public function setParam($type, $value) {
         try {
             $type = strtoupper($type);
-            if(!$this->typeCheck($type, $param)) {
-                throw new Exception("Erro: PrepareFirebirdDB::setParam error: Erro pra definir um tipo ao parametro passado - Tipo: {$type} Parametro: {$param}");
+            if(!$this->typeCheck($type, $value)) {
+                throw new Exception("Erro: PrepareFirebirdDB::setParam error: Error to define a type parameter to the value - Type: {$type} Value: {$value}");
             } else {
-                $param = $this->setType($type, $param);
+                $value = $this->setType($type, $value);
                 $posStr = stripos($this->query, '?');
-                $this->query = substr_replace($this->query, $param, $posStr, 1);
+                $this->query = substr_replace($this->query, $value, $posStr, 1);
                 $this->args++;
             }
         }
@@ -80,22 +85,18 @@ class QueryBuildDB {
     }
 
     /*
-    * Executa a query armazenada no statement retornando o resultado da query
-    * @param string     $conn           Objeto da conexão com Firebird
+    * Execute a query, saving the result in attribute $results
     */
-    public function run($conn) {
+    public function run() {
         try {
-            // Se o atributo query estiver vazio, envia um erro
             if(trim($this->query) == '' || !isset($this->query)){
-                throw new Exception("Erro: PrepareFirebirdDB::execute error: Sem query definida");
+                throw new Exception("Erro: PrepareFirebirdDB::run error: Without defined query");
             } else {
-                if($bdQuery =  @ibase_query($conn, $this->query)) {
-                    // Se query executou sem erros, grava os resultados no atributo do objeto
+                if($bdQuery =  @ibase_query($this->conn, $this->query)) {
                     while($resQuery = ibase_fetch_object($bdQuery)){
                         $this->results[] = $resQuery;    
                     }
                 } else {
-                    // Se teve erro na execução da query, envia um erro
                     throw new Exception("Erro: " . ibase_errcode() . ' - ' . ibase_errmsg());    
                 }
             }
@@ -106,21 +107,21 @@ class QueryBuildDB {
     }
 
     /*
-    * Retorna o conteudo atual do atributo query
+    * Returns the current content attribute $query
     */
     public function getQuery() {
         return $this->query;
     }
 
     /*
-    * Retorna os resultados da consulta
+    * Returns query results
     */
     public function getResult() {
         return $this->results;
     }
     
     /*
-    * Retorna apenas um resultado na consulta
+    * Returns only one result in the query
     */
     public function getOneResult() {
         return $this->results[0];

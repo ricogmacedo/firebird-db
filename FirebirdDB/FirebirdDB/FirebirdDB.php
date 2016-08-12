@@ -2,29 +2,33 @@
 namespace FirebirdDB;
 use \Exception as Exception;
 /**
-* Classe utilizada para facilitar a utilização do Firebird com orientação a objetos sem utilizar o PDO
+* Facilitates the use of Firebird with object orientation without using the PDO
 * @author   Ricardo Macedo
 * @version  1.0.0
 */
 class FirebirdDB {
 
-    public $conn; // Armazena o objeto de conexão originado pelo ibase_connect
-    public $statement; // Armazena o objeto originada pelo query
+    /*
+    * Store Firebird Resource Connection (provided by ibase_connect function)
+    * 
+    * @return Firebird Resource
+    */
+    public $conn;
 
     /*
-    * Cria a conexão com as informações passadas através dos parametros
-    * @param string     $ipHost     Endereço de IP do Servidor Firebird
-    * @param string     $addrHost   Caminho até o diretório do arquivo .FDB
-    * @param string     $dbName     Nome do arquivo .FDB
-    * @param string     $userHost   Nome de Usuário atribuido ao firebird
-    * @param string     $passwHost  Senha atribuida ao firebird
-    * @param string     $charsHost  Charset utilizado na conexão
+    * Create a Firebird Connection using the data received in the parameters
+    * @param string $ipAddr IP Address
+    * @param string $pathFDB Path to .FDB file
+    * @param string $nameFDB Name of .FDB file
+    * @param string $userDB Firebird Server Username
+    * @param string $passwDB Firebird Server Password
+    * @param string $charConn Connection Charset
     */
-    function __construct($ipHost, $addrHost, $dbName, $userHost, $passwHost, $charsHost) {
+    function __construct($ipAddr, $pathFDB, $nameFDB, $userDB, $passwDB, $charConn) {
         try {
-            $strConn = "{$ipHost}:{$addrHost}/{$dbName}";
-            if(!$this->conn = @ibase_connect($strConn, $userHost, $passwHost, $charsHost)){
-                throw new Exception("Erro: " . ibase_errcode() . ' - ' . ibase_errmsg());
+            $strConn = "{$ipAddr}:{$pathFDB}/{$nameFDB}";
+            if(!$this->conn = @ibase_connect($strConn, $userDB, $passwDB, $charConn)){
+                throw new Exception("Error: " . ibase_errcode() . ' - ' . ibase_errmsg());
             }
         }
         catch( Exception $e ) {
@@ -33,18 +37,20 @@ class FirebirdDB {
     }
 
     /*
-    * Cria um objeto com a query que será executada
-    * @param string     $query     Instrução SQL que será executada
+    * Create an object with the previously created connection and query sent
+    * @param string $query SQL Query
     */
     public function build($query) {
-        return new QueryBuildDB($query);
+        try {
+            if(!$this->conn) {
+                throw new Exception("Error: No connection has been established!");
+            } else {
+                return new QueryBuildDB($this->conn, $query);
+            }
+        }
+        catch( Exception $e ) {
+            die( $e->getMessage() );
+        }        
     }
 
-    /*
-    * Cria um objeto com a query que será executada
-    * @param string     $query     Instrução SQL que será executada
-    */
-    public static function sayHello($msg) {
-        return $msg;
-    }
 }
