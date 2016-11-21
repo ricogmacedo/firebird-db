@@ -32,7 +32,7 @@ class QueryBuildDB {
             }
         }
         catch( Exception $e ) {
-            die( $e->getMessage() );
+            return array('error' => 1, 'code' => $e->getCode(), 'message' => $e->getMessage());
         }
     }
 
@@ -94,10 +94,10 @@ class QueryBuildDB {
             } else {
                 if($bdQuery =  @ibase_query($this->conn, $this->query)) {
                     while($resQuery = ibase_fetch_object($bdQuery)){
-                        $this->results[] = $resQuery;    
+                        $this->results[] = $resQuery;
                     }
                 } else {
-                    throw new Exception("Erro: " . ibase_errcode() . ' - ' . ibase_errmsg());    
+                    throw new Exception("Erro: " . ibase_errcode() . ' - ' . ibase_errmsg());
                 }
             }
         }
@@ -119,7 +119,7 @@ class QueryBuildDB {
     public function getResult() {
         return $this->results;
     }
-    
+
     /*
     * Returns only one result in the query
     */
