@@ -38,7 +38,7 @@ class QueryBuildDB {
 
     /*
     * Verifies that the type passed in setParam matches the value entered
-    * @param string $type Types (S to String, I to Integer, N to Double)
+    * @param string $type Types (S to String, I to Integer, N to Double, A to Any)
     * @param string $param Parameter to be tested
     */
     private function typeCheck($type, $param){
@@ -46,12 +46,13 @@ class QueryBuildDB {
             case 'S': return is_string($param); break;
             case 'I': return is_numeric($param); break;
             case 'N': return is_double($param); break;
+            case 'A': return true; break;
         }
     }
 
     /*
     * Returns the value depending on the type informed
-    * @param string $type Type accepted by the class (S to String, I to Integer, N to Double)
+    * @param string $type Type accepted by the class (S to String, I to Integer, N to Double, A to Any)
     * @param string $value Value that will "receive" the type
     */
     private function setType($type, $value){
@@ -59,6 +60,7 @@ class QueryBuildDB {
             case 'S': return "'{$value}'"; break;
             case 'I': return (int) $value; break;
             case 'N': return (double) $value; break;
+            case 'A': return $value; break; // Enter the amount received without any change
         }
     }
 
@@ -80,7 +82,7 @@ class QueryBuildDB {
             }
         }
         catch( Exception $e ) {
-            die( $e->getMessage() );
+            return array('error' => 1, 'code' => $e->getCode(), 'message' => $e->getMessage());
         }
     }
 
@@ -102,7 +104,7 @@ class QueryBuildDB {
             }
         }
         catch( Exception $e ) {
-            die( $e->getMessage() );
+            return array('error' => 1, 'code' => $e->getCode(), 'message' => $e->getMessage());
         }
     }
 
