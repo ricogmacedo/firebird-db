@@ -1,6 +1,6 @@
 {
     "name": "ricogmacedo/firebird-db",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Facilitates the use of Firebird with object orientation without using the PDO",
     "authors": [
         {
