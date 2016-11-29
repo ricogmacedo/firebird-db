@@ -42,11 +42,15 @@ class QueryBuildDB {
     * @param string $param Parameter to be tested
     */
     private function typeCheck($type, $param){
-        switch ($type) {
-            case 'S': return is_string($param); break;
-            case 'I': return is_numeric($param); break;
-            case 'N': return is_double($param); break;
-            case 'A': return true; break;
+        if($param){
+            switch ($type) {
+                case 'S': return is_string($param); break;
+                case 'I': return is_numeric($param); break;
+                case 'N': return is_double($param); break;
+                case 'A': return true; break;
+            }
+        } else {
+            return true;
         }
     }
 
@@ -56,11 +60,15 @@ class QueryBuildDB {
     * @param string $value Value that will "receive" the type
     */
     private function setType($type, $value){
-        switch ($type) {
-            case 'S': return "'{$value}'"; break;
-            case 'I': return (int) $value; break;
-            case 'N': return (double) $value; break;
-            case 'A': return $value; break; // Enter the amount received without any change
+        if($value){
+            switch ($type) {
+                case 'S': return "'{$value}'"; break;
+                case 'I': return (int) $value; break;
+                case 'N': return (double) $value; break;
+                case 'A': return $value; break; // Enter the amount received without any change
+            }
+        } else {
+            return 'NULL';
         }
     }
 
