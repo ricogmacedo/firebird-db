@@ -60,7 +60,7 @@ class QueryBuildDB {
     * @param string $value Value that will "receive" the type
     */
     private function setType($type, $value){
-        if($value){
+        if($value || $value === 0){
             switch ($type) {
                 case 'S': return "'{$value}'"; break;
                 case 'I': return (int) $value; break;
