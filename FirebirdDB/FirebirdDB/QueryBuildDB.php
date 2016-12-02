@@ -44,7 +44,7 @@ class QueryBuildDB {
     private function typeCheck($type, $param){
         if($param){
             switch ($type) {
-                case 'S': return is_string($param); break;
+                case 'S': return true; break;
                 case 'I': return is_numeric($param); break;
                 case 'N': return is_double($param); break;
                 case 'A': return true; break;
