@@ -97,17 +97,25 @@ class QueryBuildDB {
     /*
     * Execute a query, saving the result in attribute $results
     */
-    public function run() {
+    public function run($expectingResult = true) {
         try {
             if(trim($this->query) == '' || !isset($this->query)){
                 throw new Exception("Erro: PrepareFirebirdDB::run error: Without defined query");
             } else {
-                if($bdQuery =  @ibase_query($this->conn, $this->query)) {
-                    while($resQuery = ibase_fetch_object($bdQuery)){
-                        $this->results[] = $resQuery;
+                if($expectingResult === false) {
+                    if(!@ibase_query($this->conn, $this->query)) {
+                        throw new Exception("Erro: " . ibase_errcode() . ' - ' . ibase_errmsg());
+                    } else {
+                        return true;
                     }
                 } else {
-                    throw new Exception("Erro: " . ibase_errcode() . ' - ' . ibase_errmsg());
+                    if($bdQuery =  @ibase_query($this->conn, $this->query)) {
+                        while($resQuery = ibase_fetch_object($bdQuery)){
+                            $this->results[] = $resQuery;
+                        }
+                    } else {
+                        throw new Exception("Erro: " . ibase_errcode() . ' - ' . ibase_errmsg());
+                    }
                 }
             }
         }
